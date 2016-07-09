@@ -1,6 +1,6 @@
 [![Build Status](https://travis-ci.org/nilsreiter/uima-search-index.svg?branch=master)](https://travis-ci.org/nilsreiter/uima-search-index)
 
-# uima-util
+# uima-search-index
 Utility components for Apache UIMA
 
 
