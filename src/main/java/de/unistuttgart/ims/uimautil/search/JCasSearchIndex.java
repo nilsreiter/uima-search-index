@@ -1,5 +1,6 @@
 package de.unistuttgart.ims.uimautil.search;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -30,6 +31,12 @@ public class JCasSearchIndex<T extends Annotation> {
 		for (String f : featureNames) {
 			indexes.put(f, new HashMap<String, Collection<T>>());
 		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Finding<T>> get(String query) throws CASException, ClassNotFoundException, IOException {
+		QueryParser parser = new QueryParser();
+		return get((SearchTerm<T>[]) parser.parse(query));
 	}
 
 	public List<Finding<T>> get(SearchTerm<T>... terms) throws ClassNotFoundException, CASException {

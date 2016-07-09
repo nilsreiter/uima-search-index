@@ -4,16 +4,28 @@ import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
 public class QueryParser {
+	Map<String, String> keyMappings = new HashMap<String, String>();
+
+	public void addKeyMapping(String key, String value) {
+		keyMappings.put(key, value);
+	}
+
+	public Map<String, String> getKeyMappings() {
+		return keyMappings;
+	}
+
+	@SuppressWarnings("unchecked")
 	public <T extends Annotation> SearchTerm<T>[] parse(String s) throws IOException {
 		StreamTokenizer st = new StreamTokenizer(new StringReader(s));
 		st.slashStarComments(false);
-		// st.quoteChar('"');
 		st.wordChars('/', '/');
 		st.ordinaryChar('=');
 
@@ -46,7 +58,13 @@ public class QueryParser {
 			String token = tokens.get(i);
 			if (token.equalsIgnoreCase("[") && tokens.get(i + 4).equalsIgnoreCase("]")) {
 				SearchTerm<T> term = new SearchTerm<T>();
-				term.setFeaturePath(tokens.get(i + 1));
+
+				String key = tokens.get(i + 1);
+				if (keyMappings.containsKey(key)) {
+					term.setFeaturePath(keyMappings.get(key));
+				} else {
+					term.setFeaturePath(key);
+				}
 				term.setValue(tokens.get(i + 3));
 				ret.add(term);
 			}

@@ -38,5 +38,38 @@ public class TestQueryParser {
 		assertEquals(2, terms.length);
 		assertEquals("lemma/value", terms[0].getFeaturePath());
 		assertEquals("pos/posTag", terms[1].getFeaturePath());
+
+	}
+
+	@Test
+	public void testMappedParser() throws IOException {
+		QueryParser qp = new QueryParser();
+		qp.addKeyMapping("lemma", "lemma/value");
+		qp.addKeyMapping("pos", "pos/posTag");
+
+		terms = qp.parse("[lemma=\"bla\"]");
+		assertNotNull(terms);
+		assertEquals(1, terms.length);
+		assertEquals("lemma/value", terms[0].getFeaturePath());
+		assertEquals("bla", terms[0].getValue());
+
+		terms = qp.parse("[lemma=\"bla\\\"s\"]");
+		assertNotNull(terms);
+		assertEquals(1, terms.length);
+		assertEquals("lemma/value", terms[0].getFeaturePath());
+		assertEquals("bla\"s", terms[0].getValue());
+
+		terms = qp.parse("[lemma=bla]");
+		assertNotNull(terms);
+		assertEquals(1, terms.length);
+		assertEquals("lemma/value", terms[0].getFeaturePath());
+		assertEquals("bla", terms[0].getValue());
+
+		terms = qp.parse("[lemma=bla][pos=NN]");
+		assertNotNull(terms);
+		assertEquals(2, terms.length);
+		assertEquals("lemma/value", terms[0].getFeaturePath());
+		assertEquals("pos/posTag", terms[1].getFeaturePath());
+
 	}
 }

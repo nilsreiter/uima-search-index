@@ -21,6 +21,7 @@ import org.junit.Test;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.io.text.TextReader;
 import de.tudarmstadt.ukp.dkpro.core.matetools.MateLemmatizer;
+import de.tudarmstadt.ukp.dkpro.core.matetools.MatePosTagger;
 import de.tudarmstadt.ukp.dkpro.core.tokit.BreakIteratorSegmenter;
 
 public class TestJCasSearchIndex {
@@ -31,9 +32,9 @@ public class TestJCasSearchIndex {
 	public void setUp() throws ResourceInitializationException {
 		JCasIterable iterable = SimplePipeline.iteratePipeline(
 				CollectionReaderFactory.createReaderDescription(TextReader.class, TextReader.PARAM_SOURCE_LOCATION,
-						"src/test/resources/1.txt", TextReader.PARAM_LANGUAGE, "de"),
+						"src/test/resources/2.txt", TextReader.PARAM_LANGUAGE, "de"),
 				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
-				// AnalysisEngineFactory.createEngineDescription(MatePosTagger.class),
+				AnalysisEngineFactory.createEngineDescription(MatePosTagger.class),
 				AnalysisEngineFactory.createEngineDescription(MateLemmatizer.class));
 		jcas = iterable.iterator().next();
 		index = new JCasSearchIndex<Token>(Token.class);
@@ -50,10 +51,10 @@ public class TestJCasSearchIndex {
 		Type type = jcas.getTypeSystem().getType(Token.class.getName());
 		fp.typeInit(type);
 		assertNotNull(fp.getValueAsString(token));
-		assertEquals("es", fp.getValueAsString(token));
+		assertEquals("der", fp.getValueAsString(token));
 		SearchTerm<Token> term = new SearchTerm<Token>();
 		term.setFeaturePath("/lemma/value");
-		term.setValue("es");
+		term.setValue("der");
 
 		List<Finding<Token>> findings = index.get(term);
 		assertEquals(3, findings.size());
