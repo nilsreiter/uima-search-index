@@ -1,9 +1,11 @@
 package de.unistuttgart.ims.uimautil.search;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
+import java.util.LinkedList;
 import java.util.List;
 
 import org.apache.uima.cas.CASException;
@@ -83,12 +85,24 @@ public class TestJCasSearchIndex {
 				AnalysisEngineFactory.createEngineDescription(MateLemmatizer.class)).iterator();
 		index = new JCasSearchIndex<Token>(Token.class);
 		index.addIndexFeatureName("/lemma/value");
+		List<JCas> jcass = new LinkedList<JCas>();
 		while (iterable.hasNext()) {
-			index.index(iterable.next());
+			jcass.add(iterable.next());
+		}
+
+		for (JCas jcas : jcass) {
+			index.index(jcas);
 		}
 
 		List<Finding<Token>> f = index.get("[/lemma/value=the]");
 		assertEquals(2, f.size());
+
+		Token[] tokens = new Token[] { f.get(0).getFindings().get(0), f.get(1).getFindings().get(0) };
+		assertFalse(tokens[0].getCAS() == tokens[1].getCAS());
+		assertEquals("dog",
+				JCasUtil.selectFollowing(Token.class, f.get(0).getFindings().get(0), 1).get(0).getCoveredText());
+		assertEquals("cat",
+				JCasUtil.selectFollowing(Token.class, f.get(1).getFindings().get(0), 1).get(0).getCoveredText());
 	}
 
 }
