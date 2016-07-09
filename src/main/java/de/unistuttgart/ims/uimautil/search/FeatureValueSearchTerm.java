@@ -22,4 +22,14 @@ public class FeatureValueSearchTerm<T extends Annotation> {
 		this.value = value;
 	}
 
+	@Override
+	public String toString() {
+		StringBuilder b = new StringBuilder();
+		b.append('[');
+		b.append(featurePath).append("==");
+		b.append('"').append(value).append('"');
+		b.append(']');
+		return b.toString();
+	}
+
 }

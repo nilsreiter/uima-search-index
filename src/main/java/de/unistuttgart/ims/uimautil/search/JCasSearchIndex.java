@@ -7,7 +7,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.logging.Logger;
 
+import org.apache.commons.lang.ArrayUtils;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.cas.FeaturePath;
 import org.apache.uima.fit.util.JCasUtil;
@@ -15,6 +17,8 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
 public class JCasSearchIndex<T extends Annotation> {
+	Logger logger = Logger.getLogger(JCasSearchIndex.class.getName());
+
 	Class<T> baseClass;
 
 	Map<String, Map<String, Collection<T>>> indexes = new HashMap<String, Map<String, Collection<T>>>();
@@ -29,6 +33,7 @@ public class JCasSearchIndex<T extends Annotation> {
 	}
 
 	public List<Finding<T>> get(FeatureValueSearchTerm<T>... terms) throws ClassNotFoundException, CASException {
+		logger.info("Received query: " + ArrayUtils.toString(terms));
 		if (terms.length == 0)
 			return Collections.emptyList();
 
