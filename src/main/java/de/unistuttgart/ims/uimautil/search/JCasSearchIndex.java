@@ -32,7 +32,7 @@ public class JCasSearchIndex<T extends Annotation> {
 		}
 	}
 
-	public List<Finding<T>> get(FeatureValueSearchTerm<T>... terms) throws ClassNotFoundException, CASException {
+	public List<Finding<T>> get(SearchTerm<T>... terms) throws ClassNotFoundException, CASException {
 		logger.info("Received query: " + ArrayUtils.toString(terms));
 		if (terms.length == 0)
 			return Collections.emptyList();
