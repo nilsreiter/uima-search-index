@@ -6,7 +6,7 @@ import static org.junit.Assert.assertNotNull;
 import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
-public class TestFeatureValueSearchTerm {
+public class TestSearchTerm {
 	SearchTerm<Annotation> term;
 
 	@Test
