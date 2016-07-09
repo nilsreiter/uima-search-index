@@ -57,14 +57,14 @@ public class TestJCasSearchIndex {
 		term.setValue("der");
 
 		List<Finding<Token>> findings = index.get(term);
-		assertEquals(3, findings.size());
+		assertEquals(7821, findings.size());
 
 		SearchTerm<Token> term2 = new SearchTerm<Token>();
 		term2.setFeaturePath("/lemma/value");
-		term2.setValue("sein");
+		term2.setValue("jung");
 
 		findings = index.get(term, term2);
-		assertEquals(3, findings.size());
+		assertEquals(15, findings.size());
 
 	}
 
