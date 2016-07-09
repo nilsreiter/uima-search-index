@@ -17,20 +17,33 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
+/**
+ * Builds the main search index over the annotations of type <code>T</code>.
+ * 
+ * .
+ * 
+ * @author reiterns
+ *
+ * @param <T>
+ */
 public class JCasSearchIndex<T extends Annotation> {
 	Logger logger = Logger.getLogger(JCasSearchIndex.class.getName());
 
 	Class<T> baseClass;
 
-	Map<String, Map<String, Collection<T>>> indexes = new HashMap<String, Map<String, Collection<T>>>();
-
-	String[] featureNames = new String[] { "/lemma/value" };
+	Map<String, Map<String, Collection<T>>> indexes = null;
+	List<String> featureNames = new LinkedList<String>();
 
 	public JCasSearchIndex(Class<T> baseClass) {
 		this.baseClass = baseClass;
-		for (String f : featureNames) {
-			indexes.put(f, new HashMap<String, Collection<T>>());
-		}
+	}
+
+	public void addIndexFeatureName(String path) {
+		featureNames.add(path);
+	}
+
+	public List<String> getIndexFeatureNames() {
+		return featureNames;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -74,6 +87,10 @@ public class JCasSearchIndex<T extends Annotation> {
 	}
 
 	public void index(JCas jcas) throws ClassNotFoundException, CASException {
+		if (indexes == null) {
+			initialiseIndexes();
+		}
+
 		System.err.println("Indexing jcas ...");
 		long indexStartTime = System.currentTimeMillis();
 		for (String feature : indexes.keySet()) {
@@ -90,5 +107,14 @@ public class JCasSearchIndex<T extends Annotation> {
 		}
 		long indexingTime = System.currentTimeMillis() - indexStartTime;
 		System.err.println("Indexing finished, took " + indexingTime + " ms.");
+	}
+
+	private void initialiseIndexes() {
+		indexes = new HashMap<String, Map<String, Collection<T>>>();
+
+		for (String f : featureNames) {
+			indexes.put(f, new HashMap<String, Collection<T>>());
+		}
+
 	}
 }

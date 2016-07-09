@@ -1,9 +1,5 @@
 package de.unistuttgart.ims.uimautil.search;
 
-import java.util.StringTokenizer;
-
-import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.uima.jcas.tcas.Annotation;
 
 public class SearchTerm<T extends Annotation> {
@@ -47,23 +43,6 @@ public class SearchTerm<T extends Annotation> {
 		b.append('"').append(value).append('"');
 		b.append(']');
 		return b.toString();
-	}
-
-	public static <T extends Annotation> SearchTerm<T> fromString(String s) throws Exception {
-		StringTokenizer st = new StringTokenizer(s, "[]=", true);
-		if (st.countTokens() != 5)
-			throw new Exception(s + " can not be parsed.");
-		SearchTerm<T> term = new SearchTerm<T>();
-		int i = 0;
-		while (st.hasMoreTokens()) {
-			String token = st.nextToken();
-			if (i == 1)
-				term.setFeaturePath(token);
-			if (i == 3)
-				term.setValue(StringEscapeUtils.unescapeJava(StringUtils.strip(token, "\"")));
-			i++;
-		}
-		return term;
 	}
 
 }
