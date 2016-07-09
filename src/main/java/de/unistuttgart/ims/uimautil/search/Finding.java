@@ -5,21 +5,21 @@ import java.util.List;
 
 import org.apache.uima.jcas.tcas.Annotation;
 
-public class Finding {
-	List<Annotation> findings = new LinkedList<Annotation>();
+public class Finding<T extends Annotation> {
+	List<T> findings = new LinkedList<T>();
 
-	public Finding(Annotation anno) {
+	public Finding(T anno) {
 		findings.add(anno);
 	}
 
 	public Finding() {
 	}
 
-	public List<Annotation> getFindings() {
+	public List<T> getFindings() {
 		return findings;
 	}
 
-	public void setFindings(List<Annotation> findings) {
+	public void setFindings(List<T> findings) {
 		this.findings = findings;
 	}
 

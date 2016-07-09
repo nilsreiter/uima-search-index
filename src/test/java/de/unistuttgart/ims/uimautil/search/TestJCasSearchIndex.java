@@ -54,7 +54,7 @@ public class TestJCasSearchIndex {
 		FeatureValueSearchTerm<Token> term = new FeatureValueSearchTerm<Token>();
 		term.setFeaturePath("/lemma/value");
 		term.setValue("es");
-		List<Finding> findings = index.get(term);
+		List<Finding<Token>> findings = index.get(term);
 		assertEquals(3, findings.size());
 	}
 

@@ -28,20 +28,20 @@ public class JCasSearchIndex<T extends Annotation> {
 		}
 	}
 
-	public List<Finding> get(FeatureValueSearchTerm<T>... terms) throws ClassNotFoundException, CASException {
+	public List<Finding<T>> get(FeatureValueSearchTerm<T>... terms) throws ClassNotFoundException, CASException {
 		if (terms.length == 0)
 			return Collections.emptyList();
 
-		Finding currentFinding;
+		Finding<T> currentFinding;
 		if (!indexes.containsKey(terms[0].getFeaturePath()))
 			return Collections.emptyList();
 		if (!indexes.get(terms[0].getFeaturePath()).containsKey(terms[0].getValue()))
 			return Collections.emptyList();
-		List<Finding> ret = new LinkedList<Finding>();
-		for (Annotation anno : indexes.get(terms[0].getFeaturePath()).get(terms[0].getValue())) {
+		List<Finding<T>> ret = new LinkedList<Finding<T>>();
+		for (T anno : indexes.get(terms[0].getFeaturePath()).get(terms[0].getValue())) {
 			JCas jcas = anno.getCAS().getJCas();
-			currentFinding = new Finding(anno);
-			Annotation nextAnnotation = anno;
+			currentFinding = new Finding<T>(anno);
+			T nextAnnotation = anno;
 
 			for (int i = 1; i < terms.length; i++) {
 
