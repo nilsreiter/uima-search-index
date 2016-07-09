@@ -3,6 +3,7 @@ package de.unistuttgart.ims.uimautil.search;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.IOException;
 import java.util.List;
 
 import org.apache.uima.cas.CASException;
@@ -11,6 +12,7 @@ import org.apache.uima.cas.Type;
 import org.apache.uima.fit.factory.AnalysisEngineFactory;
 import org.apache.uima.fit.factory.CollectionReaderFactory;
 import org.apache.uima.fit.pipeline.JCasIterable;
+import org.apache.uima.fit.pipeline.JCasIterator;
 import org.apache.uima.fit.pipeline.SimplePipeline;
 import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
@@ -30,6 +32,12 @@ public class TestJCasSearchIndex {
 
 	@Before
 	public void setUp() throws ResourceInitializationException {
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	public void testIndex() throws ClassNotFoundException, CASException, ResourceInitializationException {
 		JCasIterable iterable = SimplePipeline.iteratePipeline(
 				CollectionReaderFactory.createReaderDescription(TextReader.class, TextReader.PARAM_SOURCE_LOCATION,
 						"src/test/resources/2.txt", TextReader.PARAM_LANGUAGE, "de"),
@@ -39,11 +47,6 @@ public class TestJCasSearchIndex {
 		jcas = iterable.iterator().next();
 		index = new JCasSearchIndex<Token>(Token.class);
 		index.addIndexFeatureName("/lemma/value");
-	}
-
-	@SuppressWarnings("unchecked")
-	@Test
-	public void testIndex() throws ClassNotFoundException, CASException {
 		index.index(jcas);
 		Token token = JCasUtil.selectByIndex(jcas, Token.class, 0);
 		FeaturePath fp = jcas.createFeaturePath();
@@ -67,6 +70,25 @@ public class TestJCasSearchIndex {
 		findings = index.get(term, term2);
 		assertEquals(15, findings.size());
 
+	}
+
+	@Test
+	public void testMultipleFiles()
+			throws ResourceInitializationException, CASException, ClassNotFoundException, IOException {
+		JCasIterator iterable = SimplePipeline.iteratePipeline(
+				CollectionReaderFactory.createReaderDescription(TextReader.class, TextReader.PARAM_SOURCE_LOCATION,
+						"src/test/resources/files/*.txt", TextReader.PARAM_LANGUAGE, "en"),
+				AnalysisEngineFactory.createEngineDescription(BreakIteratorSegmenter.class),
+				AnalysisEngineFactory.createEngineDescription(MatePosTagger.class),
+				AnalysisEngineFactory.createEngineDescription(MateLemmatizer.class)).iterator();
+		index = new JCasSearchIndex<Token>(Token.class);
+		index.addIndexFeatureName("/lemma/value");
+		while (iterable.hasNext()) {
+			index.index(iterable.next());
+		}
+
+		List<Finding<Token>> f = index.get("[/lemma/value=the]");
+		assertEquals(2, f.size());
 	}
 
 }
