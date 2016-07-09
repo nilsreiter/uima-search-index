@@ -4,6 +4,7 @@ import org.apache.uima.jcas.tcas.Annotation;
 
 public class FeatureValueSearchTerm<T extends Annotation> {
 	String featurePath;
+	String value;
 
 	public String getFeaturePath() {
 		return featurePath;
@@ -12,8 +13,6 @@ public class FeatureValueSearchTerm<T extends Annotation> {
 	public void setFeaturePath(String featurePath) {
 		this.featurePath = featurePath;
 	}
-
-	String value;
 
 	public String getValue() {
 		return value;

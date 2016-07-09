@@ -14,15 +14,12 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.tcas.Annotation;
 
-import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
-
 public class JCasSearchIndex<T extends Annotation> {
 	Class<T> baseClass;
 
 	Map<String, Map<String, Collection<T>>> indexes = new HashMap<String, Map<String, Collection<T>>>();
 
-	Token token;
-	String[] featureNames = new String[] { "/Pos/PosValue", "/Lemma/Value" };
+	String[] featureNames = new String[] { "/lemma/value" };
 
 	public JCasSearchIndex(Class<T> baseClass) {
 		this.baseClass = baseClass;
@@ -51,6 +48,7 @@ public class JCasSearchIndex<T extends Annotation> {
 				nextAnnotation = JCasUtil.selectFollowing(baseClass, nextAnnotation, 1).get(0);
 				FeaturePath path = jcas.createFeaturePath();
 				path.initialize(terms[i].getFeaturePath());
+				path.typeInit(jcas.getTypeSystem().getType(baseClass.getCanonicalName()));
 				if (path.getValueAsString(nextAnnotation).equals(terms[i].getValue())) {
 					currentFinding.getFindings().add(nextAnnotation);
 				} else {
@@ -69,8 +67,9 @@ public class JCasSearchIndex<T extends Annotation> {
 		for (String feature : indexes.keySet()) {
 			FeaturePath path = jcas.createFeaturePath();
 			path.initialize(feature);
+			path.typeInit(jcas.getTypeSystem().getType(baseClass.getName()));
 			for (T annotation : JCasUtil.select(jcas, baseClass)) {
-				String value = path.getValueAsString(token);
+				String value = path.getValueAsString(annotation);
 				if (!indexes.get(feature).containsKey(value)) {
 					indexes.get(feature).put(value, new HashSet<T>());
 				}
