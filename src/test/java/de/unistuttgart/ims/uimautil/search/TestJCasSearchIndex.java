@@ -38,7 +38,7 @@ public class TestJCasSearchIndex {
 				AnalysisEngineFactory.createEngineDescription(MateLemmatizer.class));
 		jcas = iterable.iterator().next();
 		index = new JCasSearchIndex<Token>(Token.class);
-		index.addIndexFeatureName("lemma/value");
+		index.addIndexFeatureName("/lemma/value");
 	}
 
 	@SuppressWarnings("unchecked")
