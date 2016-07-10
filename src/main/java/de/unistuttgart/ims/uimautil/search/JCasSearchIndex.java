@@ -53,13 +53,12 @@ public class JCasSearchIndex<T extends Annotation> {
 		return featureNames;
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<Finding<T>> get(String query) throws CASException, ClassNotFoundException, IOException {
 		QueryParser parser = new QueryParser();
-		return get((SearchTerm<T>[]) parser.parse(query));
+		return get(parser.parse(query));
 	}
 
-	public List<Finding<T>> get(SearchTerm<T>... terms) throws ClassNotFoundException, CASException {
+	public List<Finding<T>> get(SearchTerm... terms) throws ClassNotFoundException, CASException {
 		logger.info("Received query: " + ArrayUtils.toString(terms));
 		if (terms.length == 0)
 			return Collections.emptyList();
@@ -110,8 +109,8 @@ public class JCasSearchIndex<T extends Annotation> {
 		this.jcas = jcas;
 		logger.info("Indexing jcas ...");
 		long indexStartTime = System.currentTimeMillis();
-		FeaturePath path = jcas.createFeaturePath();
 		for (String feature : indexes.keySet()) {
+			FeaturePath path = jcas.createFeaturePath();
 			path.initialize(feature);
 			path.typeInit(jcas.getTypeSystem().getType(baseClassName));
 			for (T annotation : JCasUtil.select(jcas, baseClass)) {

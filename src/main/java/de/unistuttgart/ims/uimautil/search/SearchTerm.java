@@ -1,8 +1,6 @@
 package de.unistuttgart.ims.uimautil.search;
 
-import org.apache.uima.jcas.tcas.Annotation;
-
-public class SearchTerm<T extends Annotation> {
+public class SearchTerm {
 	String featurePath;
 	String value;
 	Comparison comparison = Comparison.EQUALITY;

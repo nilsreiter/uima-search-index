@@ -22,14 +22,13 @@ public class QueryParser {
 		return keyMappings;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T extends Annotation> SearchTerm<T>[] parse(String s) throws IOException {
+	public <T extends Annotation> SearchTerm[] parse(String s) throws IOException {
 		StreamTokenizer st = new StreamTokenizer(new StringReader(s));
 		st.slashStarComments(false);
 		st.wordChars('/', '/');
 		st.ordinaryChar('=');
 
-		ArrayList<SearchTerm<T>> ret = new ArrayList<SearchTerm<T>>();
+		ArrayList<SearchTerm> ret = new ArrayList<SearchTerm>();
 		List<String> tokens = new LinkedList<String>();
 		while (st.ttype != StreamTokenizer.TT_EOF) {
 			switch (st.ttype) {
@@ -57,7 +56,7 @@ public class QueryParser {
 		for (int i = 0; i < tokens.size(); i++) {
 			String token = tokens.get(i);
 			if (token.equalsIgnoreCase("[") && tokens.get(i + 4).equalsIgnoreCase("]")) {
-				SearchTerm<T> term = new SearchTerm<T>();
+				SearchTerm term = new SearchTerm();
 
 				String key = tokens.get(i + 1);
 				if (keyMappings.containsKey(key)) {

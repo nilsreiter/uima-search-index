@@ -5,11 +5,10 @@ import static org.junit.Assert.assertNotNull;
 
 import java.io.IOException;
 
-import org.apache.uima.jcas.tcas.Annotation;
 import org.junit.Test;
 
 public class TestQueryParser {
-	SearchTerm<Annotation>[] terms = null;
+	SearchTerm[] terms = null;
 
 	@Test
 	public void testParser() throws IOException {

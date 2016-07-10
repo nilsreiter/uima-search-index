@@ -52,7 +52,6 @@ public class TestJCasSearchIndex {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	public void testIndex() throws ClassNotFoundException, CASException, ResourceInitializationException {
 		JCasIterable iterable = SimplePipeline.iteratePipeline(
@@ -64,6 +63,7 @@ public class TestJCasSearchIndex {
 		jcas = iterable.iterator().next();
 		index = new JCasSearchIndex<Token>(Token.class);
 		index.addIndexFeatureName("/lemma/value");
+		index.addIndexFeatureName("/pos/PosValue");
 		index.index(jcas);
 		Token token = JCasUtil.selectByIndex(jcas, Token.class, 0);
 		FeaturePath fp = jcas.createFeaturePath();
@@ -73,18 +73,25 @@ public class TestJCasSearchIndex {
 		fp.typeInit(type);
 		assertNotNull(fp.getValueAsString(token));
 		assertEquals("der", fp.getValueAsString(token));
-		SearchTerm<Token> term = new SearchTerm<Token>();
+		SearchTerm term = new SearchTerm();
 		term.setFeaturePath("/lemma/value");
 		term.setValue("der");
 
 		List<Finding<Token>> findings = index.get(term);
 		assertEquals(7821, findings.size());
 
-		SearchTerm<Token> term2 = new SearchTerm<Token>();
+		SearchTerm term2 = new SearchTerm();
 		term2.setFeaturePath("/lemma/value");
 		term2.setValue("jung");
 
 		findings = index.get(term, term2);
+		assertEquals(15, findings.size());
+
+		term = new SearchTerm();
+		term.setFeaturePath("/pos/PosValue");
+		term.setValue("TO");
+		findings = index.get(term);
+		assertNotNull(findings);
 		assertEquals(15, findings.size());
 
 	}
