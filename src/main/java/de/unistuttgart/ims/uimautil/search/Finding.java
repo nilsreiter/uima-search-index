@@ -23,4 +23,20 @@ public class Finding<T extends Annotation> {
 		this.findings = findings;
 	}
 
+	public T getFirst() {
+		return findings.get(0);
+	}
+
+	public T getLast() {
+		return findings.get(findings.size() - 1);
+	}
+
+	public int getBegin() {
+		return getFirst().getBegin();
+	}
+
+	public int getEnd() {
+		return getLast().getEnd();
+	}
+
 }
