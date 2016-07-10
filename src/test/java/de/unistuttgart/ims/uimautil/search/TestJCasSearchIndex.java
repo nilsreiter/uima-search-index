@@ -89,10 +89,10 @@ public class TestJCasSearchIndex {
 
 		term = new SearchTerm();
 		term.setFeaturePath("/pos/PosValue");
-		term.setValue("TO");
+		term.setValue("NN");
 		findings = index.get(term);
 		assertNotNull(findings);
-		assertEquals(15, findings.size());
+		assertEquals(15203, findings.size());
 
 	}
 
