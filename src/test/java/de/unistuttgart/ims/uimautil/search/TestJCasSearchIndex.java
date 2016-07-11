@@ -64,6 +64,8 @@ public class TestJCasSearchIndex {
 		index = new JCasSearchIndex<Token>(Token.class);
 		index.addIndexFeatureName("/lemma/value");
 		index.addIndexFeatureName("/pos/PosValue");
+		index.addIndexFeatureName("/:coveredText()");
+
 		index.index(jcas);
 		Token token = JCasUtil.selectByIndex(jcas, Token.class, 0);
 		FeaturePath fp = jcas.createFeaturePath();
@@ -93,6 +95,18 @@ public class TestJCasSearchIndex {
 		findings = index.get(term);
 		assertNotNull(findings);
 		assertEquals(15203, findings.size());
+
+		term = new SearchTerm();
+		term.setFeaturePath("/:coveredText()");
+		term.setValue("erste");
+
+		term2 = new SearchTerm();
+		term2.setFeaturePath("/:coveredText()");
+		term2.setValue("Kapitel");
+
+		findings = index.get(term, term2);
+		assertNotNull(findings);
+		assertEquals(2, findings.size());
 
 	}
 

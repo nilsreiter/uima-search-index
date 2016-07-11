@@ -69,13 +69,14 @@ public class JCasSearchIndex<T extends Annotation> {
 			return Collections.emptyList();
 
 		FSMatchConstraint[] constraints = new FSMatchConstraint[terms.length];
+		FeaturePath[] paths = new FeaturePath[terms.length];
 		for (int i = 0; i < terms.length; i++) {
-			FeaturePath path = jcas.createFeaturePath();
-			path.initialize(terms[i].getFeaturePath());
-			path.typeInit(jcas.getTypeSystem().getType(baseClass.getCanonicalName()));
+			paths[i] = jcas.createFeaturePath();
+			paths[i].initialize(terms[i].getFeaturePath());
+			paths[i].typeInit(jcas.getTypeSystem().getType(baseClass.getCanonicalName()));
 			FSStringConstraint constraint = cFactory.createStringConstraint();
 			constraint.equals(terms[i].getValue());
-			constraints[i] = cFactory.embedConstraint(path, constraint);
+			constraints[i] = cFactory.embedConstraint(paths[i], constraint);
 		}
 
 		List<Finding<T>> ret = new LinkedList<Finding<T>>();
@@ -88,10 +89,17 @@ public class JCasSearchIndex<T extends Annotation> {
 
 				nextAnnotation = JCasUtil.selectFollowing(baseClass, nextAnnotation, 1).get(0);
 
-				if (constraints[i].match(nextAnnotation)) {
-					currentFinding.getFindings().add(nextAnnotation);
+				if (paths[i].getFeaturePath().endsWith("()")) {
+					if (paths[i].getValueAsString(nextAnnotation).equals(terms[i].getValue()))
+						currentFinding.getFindings().add(nextAnnotation);
+					else
+						currentFinding = null;
 				} else {
-					currentFinding = null;
+					if (constraints[i].match(nextAnnotation)) {
+						currentFinding.getFindings().add(nextAnnotation);
+					} else {
+						currentFinding = null;
+					}
 				}
 			}
 			if (currentFinding != null) {
